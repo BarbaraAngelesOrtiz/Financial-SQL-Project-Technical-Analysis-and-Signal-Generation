@@ -43,3 +43,25 @@ This phase uses the sustained streaks calculated above to define market conditio
 ◦ F6_x: Use combinations of EMA streaks (E1_4, E2_2) and velocity streaks (H2_2).
 
 ----
+
+## ⏱️PHASE 4: Transaction Logic and Performance Tracking
+
+**Transaction Signals**
+
+Explicit buy and sell signals are defined on the Datos table:
+
+• **Buy Signals** (compra1, compra2, compra3): Require specific bullish EMA hierarchies (e.g., EMA_10 > EMA_20 > EMA_40), RSI > 60, and/or RSI reversing from oversold conditions (< 35).
+
+• **Sell Signals** (venta1, venta2): Triggered when RSI is high (> 70) and Adj_Close drops below a key EMA (EMA_10 or EMA_20).
+
+• **V1, V2 (Alternative Sales):** Defined based on EMA cross conditions and reversals, often filtered for 'RIO'.
+
+**Portfolio Management and Metrics**
+
+1. **ID Generation and Insertion:** A CTE calculates if Hist_3 showed two consecutive days of growth (HM1_2 = 1). These records, specifically for the company 'RIO', are inserted into the Cash table with a sequential ID. Duplicate entries in the Cash table are then explicitly removed.
+
+2. **Average Purchase Price (PROM):** Window functions are used to calculate the running sum of purchase prices (SUMA) and the running count of purchases (CONT). This accumulation is reset whenever a sale occurs (Venta_Flag based on V1, V2, V3),. The average price (PROM) is calculated as SUMA / CONT.
+
+3. **Return on Investment (ROI) and P&L:**
+    ◦ ROI is calculated at the time of a sale (V1 or V2 = 1) by comparing the Precio_Venta (Adj_Close) with the Precio_Compra (the Adj_Close of the preceding purchase, retrieved using LAG),,,.
+    ◦ Profit or Loss (resultado) is determined by checking if the difference (diferencia) between the sale price and the corresponding purchase price is positive ('Ganancia') or zero/negative ('Perdida').

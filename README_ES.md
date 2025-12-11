@@ -19,7 +19,7 @@ La fase inicial se centra en establecer indicadores binarios fundamentales (R, E
 ----
 
 ## 📊FASE 2: Cálculo de Rachas Sostenidas (CTE Recursivos)
-Esta fase utiliza CTE Recursivos con altos límites de recursión (OPCIÓN (MAXRECURSION 10000)),,,,,,, para calcular la duración (número de rachas) de relaciones específicas. Los números positivos indican rachas alcistas (EMA A > EMA B) y los números negativos, rachas bajistas (EMA A < EMA B).
+Esta fase utiliza CTE Recursivos con altos límites de recursión (OPCIÓN (MAXRECURSION 10000)) para calcular la duración (número de rachas) de relaciones específicas. Los números positivos indican rachas alcistas (EMA A > EMA B) y los números negativos, rachas bajistas (EMA A < EMA B).
 
 | Contador (Columna) | Condición Monitoreada |
 |------------------------------|---------------------------------------------------------------------------------------------------------------------------|

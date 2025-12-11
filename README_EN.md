@@ -38,6 +38,7 @@ This phase uses the sustained streaks calculated above to define market conditio
 1. **E3 Classification:** Categorizes the market state by defining six distinct hierarchies among EMA_10, EMA_20, and EMA_40 (Scenarios 1 through 6), otherwise setting the value to 0.
    
 2. **Compound Signals (F1, F5, F6):** These combine multiple streak counters:
+   
     ◦ F1_1, F1_2: Use thresholds on EMA cross streaks (e.g., E1_3 >= 20 or E1_1 = 1 or 2) to determine the signal.
    
     ◦ F5_1, F5_2: Define extreme conditions, often triggering a signal (1) when bearish streaks are very long (e.g., E1_3 <= -80 or combinations of negative streaks in E1_4 and E2_4).

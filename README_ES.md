@@ -1,46 +1,46 @@
-# 💡Financial SQL Project Technical Analysis and Signal Generation
+# 💡Proyecto SQL Financiero: Análisis Técnico y Generación de Señales
 
-This project consists of the creation of a database, whose data is obtained from an API. The SQL scripts, primarily using Recursive Common Table Expressions (CTEs) and UPDATE commands on the Data table, designed to perform advanced technical analysis and generate complex buying and selling signals for financial assets, often filtered for several stocks.
-
-----
-
-## 📝PHASE 1: Indicator Initialization and Simple Comparisons
-
-The initial phase focuses on establishing foundational binary indicators (R, E, H) by comparing current values ​​to fixed thresholds or immediate prior values.
-
-| Indicator Set | Calculation Summary |
-|----------------------------------|-----------------------------------------------------------------------------------------------------|
-| **RSI Indicators (R1_x)** | Sets binary flags (1/0) based on whether the RSI_SMA falls below thresholds such as **25, 35, 45** (R1_3, R1_2, R1_1). |
-| **RSI Momentum (R2, R3, R4)**| R2: today's RSI_SMA > yesterday's. <br> R3: RSI value > RSI_SMA. |
-| **EMA Acceleration (E1, E4)**| Checks if the rate of change of **EMA_5** (E1) or **EMA_10** (E4) has been increasing for 3 consecutive days. |
-| **Price vs. EMA (E2, E5)** | Checks if Adj_Close > EMA_5 (E2) or Adj_Close > EMA_10 (E5), optionally scaled by factors A or B. |
-| **Historical (H1–H6)** | H1/H3/H5: HIST_1, HIST_2, HIST_3 > 0. <br> H2/H4/H6: positive crossover (negative yesterday → positive today). |
+Este proyecto consiste en la creación de una base de datos, cuyos datos se obtienen de una API. Los scripts SQL, que utilizan principalmente Expresiones Comunes de Tabla (CTE) recursivas y comandos UPDATE en la tabla de datos, están diseñados para realizar análisis técnicos avanzados y generar señales complejas de compra y venta de activos financieros, a menudo filtradas para varias acciones.
 
 ----
 
-## 📊PHASE 2: Calculation of Sustained Streaks (Recursive CTEs)
-This phase uses Recursive CTEs with high recursion limits (OPTION (MAXRECURSION 10000)),,,,,,, to calculate the duration (streak count) of specific relationships. Positive counts denote bullish streaks (EMA A > EMA B) and negative counts denote bearish streaks (EMA A < EMA B).
+## 📝FASE 1: Inicialización de Indicadores y Comparaciones Simples
 
-| Counter (Column) | Condition Tracked |
-|-----------------------------|---------------------------------------------------------------------------------------------------------------------------|
-| **R21 / C1** | Measures the sustained streak of the relationship between **RSI_SMA3** and **RSI_SMA7**. The final **C1** value is set when R21 = 1. |
-| **E1_1, E1_2, E1_3, E1_4** | Track streaks of EMA cross-relationships: <br> • **E1_1:** EMA_5 vs EMA_10 <br> • **E1_2:** EMA_10 vs EMA_20 <br> • **E1_3:** EMA_20 vs EMA_40 <br> • **E1_4:** EMA_10 vs EMA_40 |
-| **E2_1, E2_2, E2_3, E2_4** | Track streaks of the relationship between EMA (5, 10, 20, 40) and **Adj_Close** price. |
-| **H1_1, H1_2, H1_3** | Track the streak (positive/negative) of **HIST_1**, **HIST_2**, **HIST_3** indicators. |
-| **H2_1, H2_2, H2_3** | Track the streak of the **velocity** of historical indicators (whether HIST_x increases or decreases day-over-day). |
+La fase inicial se centra en establecer indicadores binarios fundamentales (R, E, H) comparando los valores actuales con umbrales fijos o valores inmediatamente anteriores.
+
+| Conjunto de Indicadores | Resumen del Cálculo |
+|----------------------------------|--------------------------------------------------------------------------------------------------|
+| **Indicadores RSI (R1_x)** | Establece indicadores binarios (1/0) en función de si el RSI_SMA cae por debajo de umbrales como **25, 35, 45** (R1_3, R1_2, R1_1). |
+| **Momentum RSI (R2, R3, R4)**| R2: RSI_SMA de hoy > ayer. <br> R3: Valor RSI > RSI_SMA. |
+| **Aceleración EMA (E1, E4)**| Comprueba si la tasa de cambio de la **EMA_5** (E1) o la **EMA_10** (E4) ha aumentado durante 3 días consecutivos. |
+| **Precio vs. EMA (E2, E5)** | Comprueba si el Cierre Ajustado > EMA_5 (E2) o el Cierre Ajustado > EMA_10 (E5), opcionalmente escalado por los factores A o B. |
+| **Histórico (H1–H6)** | H1/H3/H5: HIST_1, HIST_2, HIST_3 > 0. <br> H2/H4/H6: cruce positivo (negativo ayer → positivo hoy). |
 
 ----
 
-## 📈PHASE 3: Complex Market States and Compound Signals (F & E3)
+## 📊FASE 2: Cálculo de Rachas Sostenidas (CTE Recursivos)
+Esta fase utiliza CTE Recursivos con altos límites de recursión (OPCIÓN (MAXRECURSION 10000)),,,,,,, para calcular la duración (número de rachas) de relaciones específicas. Los números positivos indican rachas alcistas (EMA A > EMA B) y los números negativos, rachas bajistas (EMA A < EMA B).
 
-This phase uses the sustained streaks calculated above to define market conditions and generate trigger signals.
+| Contador (Columna) | Condición Monitoreada |
+|------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| **R21 / C1** | Mide la racha sostenida de la relación entre **RSI_SMA3** y **RSI_SMA7**. El valor final de **C1** se establece cuando R21 = 1. |
+| **E1_1, E1_2, E1_3, E1_4** | Rastrear las rachas de las relaciones cruzadas de la EMA: <br> • **E1_1:** EMA_5 vs. EMA_10 <br> • **E1_2:** EMA_10 vs. EMA_20 <br> • **E1_3:** EMA_20 vs. EMA_40 <br> • **E1_4:** EMA_10 vs. EMA_40 |
+| **E2_1, E2_2, E2_3, E2_4** | Rastrear las rachas de la relación entre la EMA (5, 10, 20, 40) y el precio de **Cierre Ajustado**. |
+| **H1_1, H1_2, H1_3** | Rastrear la racha (positiva/negativa) de los indicadores **HIST_1**, **HIST_2**, **HIST_3**. |
+| **H2_1, H2_2, H2_3** | Seguimiento de la racha de la **velocidad** de los indicadores históricos (si HIST_x aumenta o disminuye día a día). |
 
-1. **E3 Classification:** Categorizes the market state by defining six distinct hierarchies among EMA_10, EMA_20, and EMA_40 (Scenarios 1 through 6), otherwise setting the value to 0.
+----
 
-2. **Compound Signals (F1, F5, F6):** These combine multiple streak counters: 
-◦ F1_1, F1_2: Use thresholds on EMA cross streaks (e.g., E1_3 >= 20 or E1_1 = 1 or 2) to determine the signal. 
-◦ F5_1, F5_2: Define extreme conditions, often triggering a signal (1) when bearish streaks are very long (e.g., E1_3 <= -80 or combinations of negative streaks in E1_4 and E2_4). 
-◦ F6_x: Use combinations of EMA streaks (E1_4, E2_2) and velocity streaks (H2_2).
+## 📈FASE 3: Estados Complejos del Mercado y Señales Compuestas (F y E3)
+
+Esta fase utiliza las rachas sostenidas calculadas anteriormente para definir las condiciones del mercado y generar señales de activación.
+
+1. **Clasificación E3:** Categoriza el estado del mercado mediante la definición de seis jerarquías distintas: EMA_10, EMA_20 y EMA_40 (Escenarios 1 a 6); de lo contrario, el valor se establece en 0.
+
+2. **Señales Compuestas (F1, F5, F6):** Combinan múltiples contadores de rachas:
+◦ F1_1, F1_2: Utilizan umbrales en las rachas cruzadas de la EMA (p. ej., E1_3 >= 20 o E1_1 = 1 o 2) para determinar la señal. ◦ F5_1, F5_2: Definen condiciones extremas, que suelen activar una señal (1) cuando las rachas bajistas son muy largas (p. ej., E1_3 <= -80 o combinaciones de rachas negativas en E1_4 y E2_4).
+
+◦ F6_x: Utilizan combinaciones de rachas de EMA (E1_4, E2_2) y rachas de velocidad (H2_2).
 
 ----
 

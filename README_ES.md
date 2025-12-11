@@ -44,24 +44,24 @@ Esta fase utiliza las rachas sostenidas calculadas anteriormente para definir la
 
 ----
 
-## ⏱️PHASE 4: Transaction Logic and Performance Tracking
+## ⏱️FASE 4: Lógica de Transacciones y Seguimiento del Rendimiento
 
-**Transaction Signals**
+**Señales de Transacción**
 
-Explicit buy and sell signals are defined on the Datos table:
+Las señales explícitas de compra y venta se definen en la tabla Datos:
 
-• **Buy Signals** (compra1, compra2, compra3): Require specific bullish EMA hierarchies (e.g., EMA_10 > EMA_20 > EMA_40), RSI > 60, and/or RSI reversing from oversold conditions (< 35).
+• **Señales de Compra** (compra1, compra2, compra3): Requieren jerarquías específicas de EMA alcistas (p. ej., EMA_10 > EMA_20 > EMA_40), RSI > 60 o reversión del RSI desde condiciones de sobreventa (< 35).
 
-• **Sell Signals** (venta1, venta2): Triggered when RSI is high (> 70) and Adj_Close drops below a key EMA (EMA_10 or EMA_20).
+• **Señales de Venta** (venta1, venta2): Se activan cuando el RSI es alto (> 70) y el Cierre Ajustado cae por debajo de una EMA clave (EMA_10 o EMA_20).
 
-• **V1, V2 (Alternative Sales):** Defined based on EMA cross conditions and reversals, often filtered for 'RIO'.
+• **V1, V2 (Ventas Alternativas):** Se definen en función de las condiciones de cruce y reversión de la EMA, a menudo filtradas por 'RIO'.
 
-**Portfolio Management and Metrics**
+**Gestión de Cartera y Métricas**
 
-1. **ID Generation and Insertion:** A CTE calculates if Hist_3 showed two consecutive days of growth (HM1_2 = 1). These records, specifically for the company 'RIO', are inserted into the Cash table with a sequential ID. Duplicate entries in the Cash table are then explicitly removed.
+1. **Generación e Inserción de ID:** Un CTE calcula si Hist_3 mostró dos días consecutivos de crecimiento (HM1_2 = 1). Estos registros, específicamente los de la empresa 'RIO', se insertan en la tabla de Efectivo con un ID secuencial. Las entradas duplicadas en la tabla de Efectivo se eliminan explícitamente.
 
-2. **Average Purchase Price (PROM):** Window functions are used to calculate the running sum of purchase prices (SUMA) and the running count of purchases (CONT). This accumulation is reset whenever a sale occurs (Venta_Flag based on V1, V2, V3),. The average price (PROM) is calculated as SUMA / CONT.
+2. **Precio Promedio de Compra (PROM):** Las funciones de ventana se utilizan para calcular la suma acumulada de los precios de compra (SUMA) y el recuento acumulado de compras (CONT). Esta acumulación se reinicia cada vez que se produce una venta (Venta_Flag basado en V1, V2, V3). El precio promedio (PROM) se calcula como SUMA / CONT.
 
-3. **Return on Investment (ROI) and P&L:**
-    ◦ ROI is calculated at the time of a sale (V1 or V2 = 1) by comparing the Precio_Venta (Adj_Close) with the Precio_Compra (the Adj_Close of the preceding purchase, retrieved using LAG),,,.
-    ◦ Profit or Loss (resultado) is determined by checking if the difference (diferencia) between the sale price and the corresponding purchase price is positive ('Ganancia') or zero/negative ('Perdida').
+3. **Retorno de la Inversión (ROI) y P&L:**
+◦ El ROI se calcula al momento de una venta (V1 o V2 ​​= 1) comparando el Precio de Venta (Ajuste de Cierre) con el Precio de Compra (el Ajusto de Cierre de la compra anterior, obtenido mediante LAG).
+◦ El Resultado se determina comprobando si la diferencia entre el precio de venta y el precio de compra correspondiente es positiva ('Ganancia') o cero/negativa ('Perdida').

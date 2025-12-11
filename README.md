@@ -2,6 +2,8 @@
 
 This project consists of SQL scripts, primarily using Recursive Common Table Expressions (CTEs) and UPDATE commands on the Data table, designed to perform advanced technical analysis and generate complex buying and selling signals for financial assets, often filtered for several stocks.
 
+---
+
 ## PHASE 1: Indicator Initialization and Simple Comparisons
 
 The initial phase focuses on establishing foundational binary indicators (R, E, H) by comparing current values to fixed thresholds or immediate prior values.
@@ -14,6 +16,7 @@ The initial phase focuses on establishing foundational binary indicators (R, E, 
 | **Price vs. EMA (E2, E5)**   | Checks if Adj_Close > EMA_5 (E2) or Adj_Close > EMA_10 (E5), optionally scaled by factors A or B.   |        
 | **Historical (H1–H6)**       | H1/H3/H5: HIST_1, HIST_2, HIST_3 > 0. <br> H2/H4/H6: positive crossover (negative yesterday → positive today). |        
 
+----
 
 ## PHASE 2: Calculation of Sustained Streaks (Recursive CTEs)
 This phase uses Recursive CTEs with high recursion limits (OPTION (MAXRECURSION 10000)),,,,,,, to calculate the duration (streak count) of specific relationships. Positive counts denote bullish streaks (EMA A > EMA B) and negative counts denote bearish streaks (EMA A < EMA B).
@@ -26,6 +29,8 @@ This phase uses Recursive CTEs with high recursion limits (OPTION (MAXRECURSION 
 | **H1_1, H1_2, H1_3**        | Track the streak (positive/negative) of **HIST_1**, **HIST_2**, **HIST_3** indicators.                                                      |
 | **H2_1, H2_2, H2_3**        | Track the streak of the **velocity** of historical indicators (whether HIST_x increases or decreases day-over-day).                         |
 
+----
+
 ## PHASE 3: Complex Market States and Compound Signals (F & E3)
 
 This phase uses the sustained streaks calculated above to define market conditions and generate trigger signals.
@@ -36,6 +41,8 @@ This phase uses the sustained streaks calculated above to define market conditio
     ◦ F1_1, F1_2: Use thresholds on EMA cross streaks (e.g., E1_3 >= 20 or E1_1 = 1 or 2) to determine the signal.
     ◦ F5_1, F5_2: Define extreme conditions, often triggering a signal (1) when bearish streaks are very long (e.g., E1_3 <= -80 or combinations of negative streaks in E1_4 and E2_4).
     ◦ F6_x: Use combinations of EMA streaks (E1_4, E2_2) and velocity streaks (H2_2).
+
+----
    
 ## PHASE 4: Transaction Logic and Performance Tracking
 
